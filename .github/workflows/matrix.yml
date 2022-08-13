@@ -23,6 +23,7 @@ jobs:
 
   build-job-B:
     runs-on: ubuntu-latest
+    needs: build-job-A
     steps:
       - name: setup
         run: |
