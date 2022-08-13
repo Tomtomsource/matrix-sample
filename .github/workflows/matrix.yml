@@ -91,7 +91,7 @@ jobs:
 
       - name: notify results
         run: |
-          artifact_result = (`find . -name "*result.txt"`)
+          artifact_result=(`find . -name "*result.txt"`)
           for v in "${artifact_result[@]}"
           do
             result=$(
