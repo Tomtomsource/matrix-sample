@@ -19,3 +19,18 @@ jobs:
       - name: deploy
         run: |
           echo "deploy done"
+
+  build-job-B:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup
+        run: |
+          echo "setup done"
+
+      - name: build
+        run: |
+          echo "build done"
+
+      - name: deploy
+        run: |
+          echo "deploy done"
