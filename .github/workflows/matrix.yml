@@ -94,7 +94,7 @@ jobs:
           artifact_result=(`find . -name "*result.txt"`)
           for v in "${artifact_result[@]}"
           do
-            test=`echo ${v##*/}`
+            test=`echo ${v##*/} | tr -d _result.txt`
             result=$(
               head -n 1 "$v"
             )
