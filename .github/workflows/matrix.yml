@@ -1,0 +1,17 @@
+---
+name: matrix-sample
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  run-repository-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl Api
+        run: |
+          curl \
+            -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/Tomtomsource/triggered-other-repo/dispatches \
+            -d '{"event_type":"dispatch-test"}'
