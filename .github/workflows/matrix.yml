@@ -33,9 +33,11 @@ jobs:
         run: |
           echo "done test ${{ matrix.task }}"
           mkdir -p test_results/${{ matrix.common-settings }}_${{ matrix.task }}
-          echo 'OK' > test_results/${{ matrix.common-settings }}_${{ matrix.task }}_result.txt
+          echo 'NG' > test_results/${{ matrix.common-settings }}_${{ matrix.task }}_result.txt
+          exit 1
 
       - name: upload artifacts (to GitHub)
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.common-settings }}_${{ matrix.task }}
