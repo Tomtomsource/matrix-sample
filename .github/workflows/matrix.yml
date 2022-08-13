@@ -89,7 +89,6 @@ jobs:
         with:
           path: download-artifact
 
-    steps:
       - name: notify results
         run: |
           ls -al
