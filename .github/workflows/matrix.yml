@@ -33,13 +33,13 @@ jobs:
         run: |
           echo "done test ${{ matrix.task }}"
           mkdir -p test_results/${{ matrix.common-settings }}_${{ matrix.task }}
-          touch test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt
+          echo 'OK' > test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt
 
       - name: upload artifacts (to GitHub)
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.common-settings }}_${{ matrix.task }}
-          path: test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt
+          path: test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt        
 
   build-job-A:
     runs-on: ubuntu-latest
@@ -84,6 +84,13 @@ jobs:
     if: ${{ always() }}
     needs: matrix-job
     steps:
+      - name: download artifact
+        uses: actions/download-artifact@v2
+        with:
+          path: download-artifact
+
+    steps:
       - name: notify results
         run: |
-          echo "notify to developpers"
+          ls -al
+          find . -name "result.txt"
