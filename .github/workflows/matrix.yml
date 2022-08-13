@@ -19,6 +19,7 @@ jobs:
       - name: deploy
         run: |
           echo "deploy done"
+          exit 1
 
   build-job-B:
     runs-on: ubuntu-latest
