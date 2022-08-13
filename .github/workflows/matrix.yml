@@ -5,6 +5,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  matrix-job:
+    strategy:
+      matrix:
+        version: [10, 12, 14]
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup
+        run: |
+          echo "${{ matrix.version }}"        
+
   build-job-A:
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +29,6 @@ jobs:
       - name: deploy
         run: |
           echo "deploy done"
-          exit 1
 
   build-job-B:
     runs-on: ubuntu-latest
