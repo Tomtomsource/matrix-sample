@@ -33,13 +33,13 @@ jobs:
         run: |
           echo "done test ${{ matrix.task }}"
           mkdir -p test_results/${{ matrix.common-settings }}_${{ matrix.task }}
-          echo 'OK' > test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt
+          echo 'OK' > test_results/${{ matrix.common-settings }}_${{ matrix.task }}_result.txt
 
       - name: upload artifacts (to GitHub)
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.common-settings }}_${{ matrix.task }}
-          path: test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt        
+          path: test_results/${{ matrix.common-settings }}_${{ matrix.task }}_result.txt        
 
   build-job-A:
     runs-on: ubuntu-latest
@@ -91,5 +91,11 @@ jobs:
 
       - name: notify results
         run: |
-          ls -al
-          find . -name "result.txt"
+          artifact_result = (`find . -name "*result.txt"`)
+          for v in "${artifact_result[@]}"
+          do
+            result=$(
+              head -n 1 "$v"
+            )
+            echo "Tests:$v\Results:"$results""
+          done
