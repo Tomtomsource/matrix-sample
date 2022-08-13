@@ -98,5 +98,5 @@ jobs:
             result=$(
               head -n 1 "$v"
             )
-            echo "Tests:"$test"\Results:"$result""
+            echo "Tests:${test%_*}\Results:"$result""
           done
