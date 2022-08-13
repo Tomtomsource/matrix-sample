@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-repository-dispatch:
+  trigger-to-another-repo:
     runs-on: ubuntu-latest
     steps:
       - name: Curl Api
