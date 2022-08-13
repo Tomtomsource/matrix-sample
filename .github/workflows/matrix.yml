@@ -8,12 +8,30 @@ jobs:
   matrix-job:
     strategy:
       matrix:
-        version: [10, 12, 14]
+        common-settings: [old,latest]
+        task: [test-build-job-A,test-build-job-B,integ-test]
+        include:
+          - task: test-build-job-A
+            config: settings-A
+          - task: test-build-job-B
+            config: settings-B
+          - task: integ-test
+            config: settings-integ
+
     runs-on: ubuntu-latest
+    needs: [build-job-A,build-job-B]
     steps:
-      - name: setup
+      - name: common settings
         run: |
-          echo "${{ matrix.version }}"        
+          echo "done common settings ${{ matrix.common-settings }}"
+
+      - name: individual settings
+        run: |
+          echo "done config ${{ matrix.config }}"
+
+      - name: test
+        run: |
+          echo "done test ${{ matrix.task}}"
 
   build-job-A:
     runs-on: ubuntu-latest
@@ -32,7 +50,6 @@ jobs:
 
   build-job-B:
     runs-on: ubuntu-latest
-    needs: build-job-A
     steps:
       - name: setup
         run: |
@@ -45,3 +62,11 @@ jobs:
       - name: deploy
         run: |
           echo "deploy done"
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: matrix-job
+    steps:
+      - name: upload
+        run: |
+          echo "upload to artifactory"
