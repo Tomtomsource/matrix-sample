@@ -8,7 +8,7 @@ jobs:
   trigger-to-another-repo:
     runs-on: ubuntu-latest
     steps:
-      - name: Curl Api
+      - name: send
         run: |
           TOKEN=${{ secrets.PAT }}
 
