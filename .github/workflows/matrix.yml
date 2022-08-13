@@ -31,7 +31,15 @@ jobs:
 
       - name: test
         run: |
-          echo "done test ${{ matrix.task}}"
+          echo "done test ${{ matrix.task }}"
+          mkdir -p test_results/${{ matrix.common-settings }}_${{ matrix.task }}
+          touch test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt
+
+      - name: upload artifacts (to GitHub)
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.common-settings }}_${{ matrix.task }}
+          path: test_results/${{ matrix.common-settings }}_${{ matrix.task }}/result.txt
 
   build-job-A:
     runs-on: ubuntu-latest
@@ -70,3 +78,12 @@ jobs:
       - name: upload
         run: |
           echo "upload to artifactory"
+
+  notify:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: matrix-job
+    steps:
+      - name: notify results
+        run: |
+          echo "notify to developpers"
