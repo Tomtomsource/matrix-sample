@@ -26,7 +26,7 @@ jobs:
             branch=${{ github.ref_name }}
           elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" != "maintenance" ]]; then
             echo "not maintenance push"
-            branch=$(git show branch --all 2>/dev/null | grep '*' | grep -v "$(git rev-parse -abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' 'print $2' | sed 's/origin\///')
+            branch=$(git show branch --all 2>/dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' 'print $2' | sed 's/origin\///')
           fi
           echo "######"
           echo ${branch}
