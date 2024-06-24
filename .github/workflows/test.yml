@@ -1,5 +1,6 @@
 name: actions-test
 on:
+  pull_request:
   push:
   workflow_dispatch:
 
@@ -14,19 +15,23 @@ jobs:
 
       - name: Check variables
         run: |
-          branch=""
+          base_branch=$(git show-branch --all 2>/dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' '{print $2}' | sed 's/origin\///')
+          echo "base branch is ${base_branch}"
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "PR"
             branch=${{ github.base_ref }}
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "workflow_dispatch"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${base_branch}" != "maintenance"* ]]; then
+            echo "workflow_dispatch, basebranch is not maintenance"
             branch=$(git rev-parse --abbrev-ref HEAD)
-          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == "maintenance" ]]; then
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${base_branch}" == "maintenance"* ]]; then
+            echo "workflow_dispatch, basebranch is maintenance"
+            branch=${base_branch}
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == "maintenance"* ]]; then
             echo "maintenance push"
             branch=${{ github.ref_name }}
-          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" != "maintenance" ]]; then
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" != "maintenance"* ]]; then
             echo "not maintenance push"
-            branch=$(git show-branch --all 2>/dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' '{print $2}' | sed 's/origin\///')
+            branch=${base_branch}
           fi
           echo "######"
           echo ${branch}
