@@ -1,0 +1,32 @@
+name: actions-test
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ceckout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: Check variables
+        run: |
+          branch=""
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "PR"
+            branch=${{ github.base_ref }}
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "workflow_dispatch"
+            branch=$(git rev-parse --abbrev-ref HEAD)
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" == "maintenance" ]]; then
+            echo "maintenance push"
+            branch=${{ github.ref_name }}
+          elif [[ "${{ github.event_name }}" == "push" && "${{ github.ref_name }}" != "maintenance" ]]; then
+            echo "not maintenance push"
+            branch=$(git show-branch --all 2>/dev/null | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' '{print $2}' | sed 's/origin\///')
+          fi
+          echo "######"
+          echo ${branch}
